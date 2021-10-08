@@ -1,19 +1,53 @@
-import express , {Request , Response} from 'express';
+import express , {Request , Response , Express } from 'express';
+import * as http from 'http';
+import * as socketio from 'socket.io';
 import cors from 'cors';
 import helmet from 'helmet';
+
+import validator from 'validator';
+
 const PORT = 5000;
 
-const server  = express();
 
-// Middlewares
-server.use( cors() );
-server.use( helmet() );
-server.use( express.json() );
+const app : Express = express();
 
-// Public folder for static files
-server.use('/public' , express.static('public'));
+app.use( cors() );
+app.use( helmet() );
+app.use( express.json() );
 
 
-server.get( '/' , ( req : Request , res : Response ) =>  res.send('<h1> Hello World </h1>')  );
+const server : http.Server = http.createServer(app);
+const io : socketio.Server = new socketio.Server(server , {
+    cors: { origin: ['http://localhost:3000'], credentials: true },
+  });
 
-server.listen( PORT , () => { console.log('Started') } )
+
+
+io.on('connect' , ( socket : socketio.Socket ) => {
+    socket.on('login' , ( client : socketio.Socket ) => {
+        console.log(client);
+    });
+
+    socket.on('checkEmail' , ( email : string  ) => {
+        if( validator.isEmail(email) ){
+            socket.emit('emailChecked' , {})
+        }else
+        {
+            socket.emit('emailChecked' ,  {error : 'Error : Invalid Email'})
+        }
+        
+    })
+
+    // socket.on('checkUsername' , ( email : string  ) => {
+    //     if( validator.isEmail(email) ){
+    //         socket.emit('emailChecked' , {})
+    //     }else
+    //     {
+    //         socket.emit('emailChecked' ,  {error : 'Error'})
+    //     }
+        
+    // })
+
+})
+
+server.listen( PORT );

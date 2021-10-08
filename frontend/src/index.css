@@ -27,6 +27,9 @@
         color: #858585;
 }
 
+.hidden{
+    visibility: hidden;
+}
 
 .mb-10{
     margin-bottom: 10px;

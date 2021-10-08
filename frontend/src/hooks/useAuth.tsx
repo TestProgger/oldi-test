@@ -7,13 +7,14 @@ export const localStorageName  = "oldy_token";
 
 export interface AuthInterface{
     token : string  | null | undefined
+    setToken : React.Dispatch< React.SetStateAction<string|null> >
     apiEndpoint : string
     login : ( resp_token : string ) => void
     logout : ( ) => void 
 }
 
 export const useAuth = () : AuthInterface => {
-    const [ token , setToken ] = useState<string | null>();
+    const [ token , setToken ] = useState<string | null>('');
     const apiEndpoint = "http://" + window.location.host.split(":")[0] + ":5000/api";
 
     const history = useHistory();
@@ -31,6 +32,6 @@ export const useAuth = () : AuthInterface => {
         history.go(0);
     }  , [])
 
-    return { token  , apiEndpoint , login  , logout };
+    return { token  , setToken , apiEndpoint , login  , logout };
 
 }

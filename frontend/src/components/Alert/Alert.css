@@ -1,0 +1,33 @@
+.custom-alert{
+    position: absolute;
+
+    width: 250px;
+
+    top: 10px;
+    right: 10px;
+
+    /* border: 1px solid black; */
+    box-shadow: 0 0 8px #EE1F82;
+    background-color: #EE1F82;
+    border-radius: 30px;
+    color: white;
+    font-size: 18px;
+
+    text-align: center;
+
+    animation: showAlert 2s forwards;
+    
+
+}
+.custom-alert p{
+    padding: 10px;
+}
+
+@keyframes showAlert {
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
