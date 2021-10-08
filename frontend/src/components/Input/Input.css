@@ -1,0 +1,29 @@
+.custom-input{
+    position: relative;
+}
+
+.custom-input input {
+    border: 1px solid #696868;
+    font-size : 18px;
+    width : 250px;
+    padding : 10px 10px 10px 40px;
+    border-radius: 40px;
+
+}
+
+.custom-input input:focus{
+    outline: none;
+}
+
+.custom-input label{
+    position : absolute;
+    left : 10px ;
+    top: calc(50% - 25px / 2);
+}
+
+
+img{
+    height: 25px;
+    padding: 0;
+    margin: 0;
+}
