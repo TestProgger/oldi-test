@@ -9,17 +9,21 @@ export class User{
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({type : 'string' , length : 64 ,})
+    
+    @Column("varchar" , {length : 255})
+    username !: string 
+
+    @Column("varchar" , {length : 255})
     @IsEmail()
     email !: string 
 
-    @Column( { type : 'string' , length : 255 } )
+    @Column( "varchar" , {length : 255} )
     password !: string
 
-    @Column( { type : 'string' ,  length : 255 } )
+    @Column( "varchar" , {length : 255} )
     secret ?: string
 
-    @Column( { type : 'string' } )
+    @Column( "varchar" , { length : 255 } )
     profileImage ?: string
 
     @BeforeInsert()
