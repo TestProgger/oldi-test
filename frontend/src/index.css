@@ -1,0 +1,44 @@
+@font-face{
+    font-family: "Roboto";
+    src : url('./fonts/Roboto-Regular.ttf');
+}
+
+@font-face {
+    font-family: "Poppins";
+    src: url('./fonts/Poppins-Regular.ttf');
+}
+
+*{
+    font-family: 'Roboto';
+}
+
+.base-form{
+    width : 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.mb-10{
+    margin-bottom: 10px;
+}
+
+.mb-15{
+    margin-bottom: 15px;
+}
+
+.mb-25{
+    margin-bottom: 25px;
+}
+
+.mb-50{
+    margin-bottom: 50px;
+}
+
+.mb-75{
+    margin-bottom: 75px;
+}
+
+.mb-100{
+    margin-bottom: 100px;
+}
