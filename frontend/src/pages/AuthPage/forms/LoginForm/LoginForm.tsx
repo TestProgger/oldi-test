@@ -14,7 +14,7 @@ export const LoginForm : FC = () => {
 
     return (
         <div className = "base-form login-form">
-            <h1 className="header" > Login </h1>
+            <h1 className="base-form-header header" > Login </h1>
             <Input inputType="text" placeholder="Username" icon={userIcon} classNames = "mb-15"  />
             <Input inputType="password" placeholder="Password" icon={keyIcon}  classNames = "mb-15" />
             <Button text = "Proceed" onClick={clk} />

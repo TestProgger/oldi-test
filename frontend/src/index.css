@@ -19,6 +19,15 @@
     align-items: center;
 }
 
+.base-form-header{
+        text-align: center;
+        font-size: 48px;
+        font-style: normal;
+        font-weight: normal;
+        color: #858585;
+}
+
+
 .mb-10{
     margin-bottom: 10px;
 }
