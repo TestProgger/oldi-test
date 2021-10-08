@@ -1,0 +1,12 @@
+.custom-error{
+    text-align: center;
+}
+
+.custom-error .error-head,
+.custom-error .error-body{
+    color: red;
+    font-family: 'Poppins';
+    line-height: 21px;
+    font-size: 14px;
+    font-weight: 600;
+}
