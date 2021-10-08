@@ -6,6 +6,7 @@ import "./AuthPage.css";
 import { Alert } from "../../components/Alert/Alert";
 import { AppContext } from "../../contexts/AppContext";
 import { Socket } from "socket.io-client";
+import { Validator } from "../../handlers/Validator";
 
 
 
@@ -22,6 +23,8 @@ export const AuthPage : FC = () => {
     }
     const hideAlert = ( ) => setAlertShown(false);
 
+    const validator = new Validator( io as Socket , showAlert , hideAlert );
+
     return (
         <div className="auth-page-container">
 
@@ -29,7 +32,7 @@ export const AuthPage : FC = () => {
 
             <div className="auth-page-form">
 
-                <RegisterForm io = {io as Socket} showAlert = {(text:string ) =>  showAlert(text)} hideAlert = {() => hideAlert()}/>
+                <RegisterForm io = {io as Socket}  validator = { validator }/>
 
             </div>
 
