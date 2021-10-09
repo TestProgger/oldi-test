@@ -10,6 +10,7 @@ import { Validator } from "../../handlers/Validator";
 
 
 import "./AuthPage.css";
+import { ResetForm } from "./forms/ResetForm/ResetForm";
 
 
 export const AuthPage : FC = () => {
@@ -34,7 +35,7 @@ export const AuthPage : FC = () => {
 
             <div className="auth-page-form">
 
-                <RegisterForm io = {io as Socket}  validator = { validator }/>
+                <ResetForm io = {  io as Socket }/>
 
             </div>
 
