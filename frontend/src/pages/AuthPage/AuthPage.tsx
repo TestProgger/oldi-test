@@ -1,7 +1,7 @@
 import { FC, useContext, useState } from "react";
 import { LoginForm } from "./forms/LoginForm/LoginForm";
 import { RegisterForm } from "./forms/RegisterForm/RegisterForm";
-import "./AuthPage.css";
+
 
 import { Alert } from "../../components/Alert/Alert";
 import { AppContext } from "../../contexts/AppContext";
@@ -9,17 +9,19 @@ import { Socket } from "socket.io-client";
 import { Validator } from "../../handlers/Validator";
 
 
+import "./AuthPage.css";
+
 
 export const AuthPage : FC = () => {
 
     const [ alertShown , setAlertShown ] = useState<boolean>(false);
-    const [ alertText ,  setAlertText ] = useState<string>('');
+    const [ alertStrings ,  setAlertText ] = useState<string[]>([]);
 
     const { io }  = useContext(AppContext);
 
-    const showAlert = ( text : string ) => {
+    const showAlert = ( response : string[] ) => {
         setAlertShown(true)
-        setAlertText(text);
+        setAlertText(response);
     }
     const hideAlert = ( ) => setAlertShown(false);
 
@@ -28,7 +30,7 @@ export const AuthPage : FC = () => {
     return (
         <div className="auth-page-container">
 
-            { alertShown ?  <Alert   text={alertText}/> : null }
+            { alertShown ?  <Alert   alertStrings={alertStrings}/> : null }
 
             <div className="auth-page-form">
 

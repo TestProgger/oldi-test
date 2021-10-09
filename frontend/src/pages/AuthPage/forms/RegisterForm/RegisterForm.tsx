@@ -10,6 +10,7 @@ import keyIcon from '../../../../icons/key.png';
 import mailIcon from '../../../../icons/mail.png';
 import { Socket } from "socket.io-client";
 import { Validator } from "../../../../handlers/Validator";
+import { AuthEmit, AuthEvent } from "../../../../enums/AuthEnums";
 
 interface RegisterProps{
     validator : Validator
@@ -22,6 +23,10 @@ export const RegisterForm : FC<RegisterProps> = ({ validator ,  io  }) => {
     const [ password , setPassword ] = useState<string>('');
     const [ confPassword , setConfPassword ] = useState<string>('');
 
+    const createUser = () => {
+        io.emit( AuthEmit.REGISTRATION , { username , email , password } );
+        io.on( AuthEvent.REGISTERED , console.log )
+    }
     
     return  (
         <div className="base-form register-form">
@@ -42,7 +47,7 @@ export const RegisterForm : FC<RegisterProps> = ({ validator ,  io  }) => {
                 onChange = { (event : React.ChangeEvent<HTMLInputElement>) => setConfPassword(event.target.value) }
                 onBlur = {() => validator.validatePassword(password , confPassword) }
                 inputType="password" placeholder="Confirm Password" icon={keyIcon}  classNames = "mb-15" />
-            <Button text = "Proceed" onClick={() => {}} />
+            <Button text = "Proceed" onClick={() =>  validator.isValid ?  createUser() : {}} />
         </div>
     )
 }
