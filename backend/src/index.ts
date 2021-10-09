@@ -122,15 +122,15 @@ io.on( 'connect' , async ( socket : socketio.Socket ) => {
     }  );
 
     socket.on( AuthEvent.LOGIN  , async ( dto : LoginUserDto ) => {
-        const user = await authService.loginUser( dto );
-        if ( user instanceof User )
+        const data = await authService.loginUser( dto );
+        if ( data instanceof User )
         {
-            const token = await authService.createToken( user , process.env.JWT_SECRET  as string  );
+            const token = await authService.createToken( data , process.env.JWT_SECRET  as string  );
             socket.emit( AuthEmiter.LOGED , token );
         }
         else
         {
-            socket.emit( AuthEmiter.LOGED , user );
+            socket.emit( AuthEmiter.LOGED , data );
         }
     })
 
