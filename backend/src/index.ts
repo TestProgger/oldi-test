@@ -3,12 +3,23 @@ import * as http from 'http';
 import * as socketio from 'socket.io';
 import cors from 'cors';
 import helmet from 'helmet';
+import * as jwt from 'jsonwebtoken';
+import { v5 as uuidv5 , v4 as uuidv4 } from 'uuid';
 import { createConnection, getRepository } from 'typeorm';
 
 import validator from 'validator';
+import dotenv from 'dotenv'
 import { User } from './entity/User';
 
+import { ValidateEmit , ValidateError , ValidateEvent } from './enums/ValidateEnum';
+import {  AuthEvent , AuthError, AuthEmiter } from './enums/AuthEnums';
+import { AuthService, TokenInterface } from './services/AuthService';
+import { CreateUserDto } from './services/dto/CreateUserDto';
+import { LoginUserDto } from './services/dto/LoginUserDto';
+
 const PORT = 5000;
+
+dotenv.config();
 
 
 const app : Express = express();
@@ -18,94 +29,112 @@ app.use( helmet() );
 app.use( express.json() );
 
 
+
 const server : http.Server = http.createServer(app);
 const io : socketio.Server = new socketio.Server(server , {
     cors: { origin: ['http://localhost:3000'], credentials: true },
   });
 
-enum EmitStrings{
-    EMAIL_VALIDATED = 'emailValidated',
-    PASSWORD_VALIDATED = 'passwordValidated',
-    USERNAME_VALIDATED = 'usernameValidated'
+interface SessionStorageInterface{
+    key : Buffer,
+    iv : Buffer,
+    token : TokenInterface
 }
 
-enum EventStrings{
-    VALIDATE_EMAIL = 'validateEmail',
-    VALIDATE_PASSWORD = 'validatePassword',
-    VALIDATE_USERNAME = 'validateUsername'
-}
+const SessionStorage = new Map<string , SessionStorageInterface >()
 
-enum ErrorStrings{
-    
-    INVALID_EMAIL = 'Invalid Email',
-    EMAIL_ALREADY_USE = "E-Mail already in use",
-
-    INVALID_USERNAME = "Invalid Username",
-    USERNAME_ALREADY_USE = "Username alreadu in use",
-
-    INVALID_PASSWORD = "Invalid Password",
-    PASSWORDS_DIFFERENT = "Password are different",
-    SHORT_PASSWORD = "Password is to short",
-    WEAK_PASSOWRD = "Password is weak"
-
-}
 
 // Validating Values
 io.on('connect' , async ( socket : socketio.Socket ) => {
 
     const userRepository = getRepository( User );
 
-    socket.on(EventStrings.VALIDATE_EMAIL ,  async ( email : string  ) => {
+    socket.on(ValidateEvent.VALIDATE_EMAIL ,  async ( email : string  ) => {
 
         const errors : string[] = [];
 
         if( !validator.isEmail(email) )
         {
-            errors.push( ErrorStrings.INVALID_EMAIL);
+            errors.push( ValidateError.INVALID_EMAIL);
         }
 
-        if ( await userRepository.count( { email } ) )
+        if ( await userRepository.count( { where : { email }  } ) )
         {
-            errors.push(ErrorStrings.EMAIL_ALREADY_USE   );
+            errors.push(ValidateError.EMAIL_ALREADY_USE   );
         }
 
-        socket.emit( EmitStrings.EMAIL_VALIDATED , errors.length ? { error : errors } : {} );
+        socket.emit( ValidateEmit.EMAIL_VALIDATED , errors.length ? { error : errors } : {} );
         
     });
 
 
-    socket.on( EventStrings.VALIDATE_USERNAME , async ( username : string ) => {
+    socket.on( ValidateEvent.VALIDATE_USERNAME , async ( username : string ) => {
         
         const errors : string[] = [];
 
         if ( username.length === 0 || username.length > 255)
         {
-            errors.push(ErrorStrings.INVALID_USERNAME );
+            errors.push(ValidateError.INVALID_USERNAME );
         }
         
-        if( await userRepository.count( { username } ) )
+        if( await userRepository.count( { where :  { username }  } ) )
         {
-            errors.push( ErrorStrings.USERNAME_ALREADY_USE  );
+            errors.push( ValidateError.USERNAME_ALREADY_USE  );
         }
         
-        socket.emit( EmitStrings.USERNAME_VALIDATED , errors.length ? { error : errors } : {} );
+        socket.emit( ValidateEmit.USERNAME_VALIDATED , errors.length ? { error : errors } : {} );
 
     } );
 
     interface PasswordInterface{ password : string , confPassword : string }
-    socket.on( EventStrings.VALIDATE_PASSWORD , async( { password , confPassword } : PasswordInterface ) =>{
+    socket.on( ValidateEvent.VALIDATE_PASSWORD , async( { password , confPassword } : PasswordInterface ) =>{
         const errors : string[] =  [];
         
-        if( password !== confPassword ){ errors.push( ErrorStrings.PASSWORDS_DIFFERENT ); }
-        if( password.length < 8 ){ errors.push( ErrorStrings.SHORT_PASSWORD ) }
-        if( !( /\d/.test( password ) && /\w/.test( password )  ) && password.length >=  8  ){ errors.push( ErrorStrings.WEAK_PASSOWRD ) }
+        if( password !== confPassword ){ errors.push( ValidateError.PASSWORDS_DIFFERENT ); }
+        if( password.length < 8 ){ errors.push( ValidateError.SHORT_PASSWORD ) }
+        if( !( /\d/.test( password ) && /\w/.test( password )  ) && password.length >=  8  ){ errors.push( ValidateError.WEAK_PASSOWRD ) }
 
-        socket.emit( EmitStrings.PASSWORD_VALIDATED , errors.length ? { error : errors } : {} );
+        socket.emit( ValidateEmit.PASSWORD_VALIDATED , errors.length ? { error : errors } : {} );
 
     })
 
 
-})
+});
+
+// 
+io.on( 'connect' , async ( socket : socketio.Socket ) => {
+
+    const authService = new AuthService();
+
+    // await authService.createUser( { username : 'Mikhail' , password : '213213131' , email : "email@mail.ru" } );
+
+    socket.on( AuthEvent.REGISTRATION ,  async ( dto : CreateUserDto ) => {
+        const user = await authService.createUser(dto);
+        if( user instanceof  User ){
+            const token = await authService.createToken( user  , process.env.JWT_SECRET as string );
+            socket.emit(AuthEmiter.REGISTERED , token);
+        }else
+        {
+            socket.emit( AuthEmiter.LOGED , { error : AuthError.REGISTRATION_ALREADY_IN_USE } )
+        }
+        
+        
+    }  );
+
+    socket.on( AuthEvent.LOGIN  , async ( dto : LoginUserDto ) => {
+        const user = await authService.loginUser( dto );
+        if ( user instanceof User )
+        {
+            const token = await authService.createToken( user , process.env.JWT_SECRET  as string  );
+            socket.emit( AuthEmiter.LOGED , token );
+        }
+        else
+        {
+            socket.emit( AuthEmiter.LOGED , user );
+        }
+    })
+
+});
 
 createConnection().then(() => server.listen( PORT ));
 
