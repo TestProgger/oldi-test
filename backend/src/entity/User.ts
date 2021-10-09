@@ -2,13 +2,15 @@ import { IsEmail } from 'class-validator';
 import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { hash } from 'bcrypt';
 import { randomBytes } from 'crypto'
-
+import { v4 as uuidv4 } from 'uuid';
 @Entity('users')
 export class User{
 
     @PrimaryGeneratedColumn()
     id!: number;
 
+    @Column("varchar" , {nullable: true})
+    uuid !: string
     
     @Column("varchar" , {length : 255})
     username !: string 
@@ -20,10 +22,10 @@ export class User{
     @Column( "varchar" , {length : 255} )
     password !: string
 
-    @Column( "varchar" , {length : 255} )
+    @Column( "varchar" , { nullable : true} )
     secret ?: string
 
-    @Column( "varchar" , { length : 255 } )
+    @Column( "varchar" , { length : 255 , nullable : true } )
     profileImage ?: string
 
     @BeforeInsert()
@@ -34,6 +36,11 @@ export class User{
     @BeforeInsert()
     async genSecret(){
         this.secret =  randomBytes(64).toString('base64');
+    }
+
+    @BeforeInsert()
+    async getUUID(){
+        this.uuid = uuidv4();
     }
 
 }
