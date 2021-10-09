@@ -3,13 +3,13 @@ import { FC } from "react";
 import './Alert.css';
 
 interface AlertProps {
-    text : string 
+    alertStrings : string[] 
 }
 
-export const Alert:FC<AlertProps> = ( { text } ) => {
+export const Alert:FC<AlertProps> = ( { alertStrings } ) => {
     return (
         <div className = "custom-alert" >
-            <p>{text}</p>
+            { alertStrings.map( (  str , ind ) => <p key={ind}>{ str }</p> ) }
         </div>
     )
 }
