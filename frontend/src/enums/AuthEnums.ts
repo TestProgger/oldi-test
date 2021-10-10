@@ -1,11 +1,13 @@
 export enum AuthEmit {
     REGISTRATION = 'registraition',
     LOGIN = 'login',
-    RESET = 'reset'
+    RESET = 'reset',
+    CONFIRMATION = "confirmation"
 }
 
 export enum AuthEvent {
     REGISTERED = 'registered',
     LOGED = 'loged',
-    RESETED = 'reseted'
+    RESETED = 'reseted',
+    CONFIRMED = "confirmed"
 }

@@ -10,7 +10,7 @@ import { Validator } from "../../handlers/Validator";
 
 
 import "./AuthPage.css";
-import { ResetForm } from "./forms/ResetForm/ResetForm";
+import { RCForm } from "./forms/RCForm";
 
 
 export const AuthPage : FC = () => {
@@ -35,7 +35,7 @@ export const AuthPage : FC = () => {
 
             <div className="auth-page-form">
 
-                <ResetForm io = {  io as Socket }/>
+                <RCForm io = { io as Socket } showAlert = { (errors) => showAlert(errors) }  hideAlert = {  () => hideAlert()}/>
 
             </div>
 
