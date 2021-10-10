@@ -3,8 +3,6 @@ import * as http from 'http';
 import * as socketio from 'socket.io';
 import cors from 'cors';
 import helmet from 'helmet';
-import * as jwt from 'jsonwebtoken';
-import { v5 as uuidv5 , v4 as uuidv4 } from 'uuid';
 import { createConnection, getRepository } from 'typeorm';
 
 import validator from 'validator';
@@ -13,9 +11,13 @@ import { User } from './entity/User';
 
 import { ValidateEmit , ValidateError , ValidateEvent } from './enums/ValidateEnum';
 import {  AuthEvent , AuthError, AuthEmiter } from './enums/AuthEnums';
-import { AuthService, TokenInterface } from './services/AuthService';
+import { UserService, TokenInterface } from './services/UserService';
 import { CreateUserDto } from './services/dto/CreateUserDto';
 import { LoginUserDto } from './services/dto/LoginUserDto';
+import { ConfirmationDto } from './services/dto/ConfirmationDto';
+import { ResetPasswordDto } from './services/dto/ResetPasswordDto';
+import { AuthMiddleware } from './middlewares/AuthMiddleware';
+import {  TokenStoreService } from './services/TokenStoreService';
 
 const PORT = 5000;
 
@@ -35,14 +37,9 @@ const io : socketio.Server = new socketio.Server(server , {
     cors: { origin: ['http://localhost:3000'], credentials: true },
   });
 
-interface SessionStorageInterface{
-    key : Buffer,
-    iv : Buffer,
-    token : TokenInterface
-}
 
-const SessionStorage = new Map<string , SessionStorageInterface >()
-
+let userService: UserService;
+let tokenStoreService : TokenStoreService;
 
 // Validating Values
 io.on('connect' , async ( socket : socketio.Socket ) => {
@@ -101,40 +98,119 @@ io.on('connect' , async ( socket : socketio.Socket ) => {
 
 });
 
-// 
+//
+
+interface ResetUserValue{
+    id : number 
+    code : string 
+}
+
 io.on( 'connect' , async ( socket : socketio.Socket ) => {
 
-    const authService = new AuthService();
-
-    // await authService.createUser( { username : 'Mikhail' , password : '213213131' , email : "email@mail.ru" } );
+    const resetUserDB = new Map<string , ResetUserValue>( );
 
     socket.on( AuthEvent.REGISTRATION ,  async ( dto : CreateUserDto ) => {
-        const user = await authService.createUser(dto);
+        const user = await userService.createUser(dto);
         if( user instanceof  User ){
-            const token = await authService.createToken( user  , process.env.JWT_SECRET as string );
+            const token = await userService.createToken( user);
+            await tokenStoreService.insertToken( token  , user );
             socket.emit(AuthEmiter.REGISTERED , token);
         }else
         {
-            socket.emit( AuthEmiter.LOGED , { error : AuthError.REGISTRATION_ALREADY_IN_USE } )
+            socket.emit( AuthEmiter.REGISTERED , { error : [ AuthError.REGISTRATION_ALREADY_IN_USE ] } )
         }
         
         
     }  );
 
     socket.on( AuthEvent.LOGIN  , async ( dto : LoginUserDto ) => {
-        const data = await authService.loginUser( dto );
+        const data = await userService.loginUser( dto );
         if ( data instanceof User )
         {
-            const token = await authService.createToken( data , process.env.JWT_SECRET  as string  );
+            const token = await userService.createToken( data);
+            await tokenStoreService.insertToken( token , data );
             socket.emit( AuthEmiter.LOGED , token );
         }
         else
         {
-            socket.emit( AuthEmiter.LOGED , data );
+            socket.emit( AuthEmiter.LOGED , { error :  [ data ] } );
         }
+    });
+
+    socket.on( AuthEvent.RESET , async ( username : string ) => {
+        const user = await userService.getUserByUsername( username );
+        if( user ){ 
+            
+            await tokenStoreService.deleteTokenByUser(user);
+
+            /// Code sended to E-Mail
+            const code  = Math.floor(Math.random() * 10000000).toString().slice(0,6);
+            console.log(code); 
+
+
+            const tmpToken = await userService.createTempToken(user);
+            resetUserDB.set( tmpToken , {code , id : user.id }  );
+            socket.emit( AuthEmiter.RESETED , tmpToken );
+            setTimeout( () => resetUserDB.delete( tmpToken ) , +( process.env.TMP_TOKEN_LIFETIME as string ) ) 
+        }
+        else{ socket.emit( AuthEmiter.RESETED , { error : [AuthError.LOGIN_IDENTITY_NOT_FOUND] } ) }
+    } )
+
+    socket.on( AuthEvent.CONFIRMATION , async ( { token , code } : ConfirmationDto ) => {
+        try{
+            const storedData = resetUserDB.get( token );
+                if( storedData?.code === code )
+                {
+                    socket.emit( AuthEmiter.CONFIRMED , {} )
+                }else
+                {
+                    socket.emit( AuthEmiter.CONFIRMED , { error : [ AuthError.CONFIRM_INCORRECT_CODE ] } ); 
+                }
+        }
+        catch( ex)
+        {
+            socket.emit( AuthEmiter.CONFIRMED , { error : [ AuthError.CONFIRM_INVALID_FORM ] } ); 
+        }
+        
+    });
+
+    socket.on( AuthEvent.RESET_PASSWORD , async ( { password , confPassword , token } : ResetPasswordDto ) => {
+        try{
+            const storedData = resetUserDB.get( token );
+            if( password !== confPassword ){
+                socket.emit( AuthEmiter.PASSWORD_RESETED , { error : [AuthError.RESET_PASSWORD_PASSWORDS_DIFFERENT] } );
+            }else{
+                if( storedData ){
+                    await userService.changePassword( storedData?.id , password );
+                    socket.emit( AuthEmiter.PASSWORD_RESETED , {} );
+                    resetUserDB.delete(token);
+                }
+            }
+        }catch(ex)
+        {
+            socket.emit( AuthEmiter.PASSWORD_RESETED , {  error : [ AuthError.RESET_PASSWORD_INVALID_FORM ]} )
+        }
+    } );
+
+    socket.on('getToken' , async () => {
+        const user  = await userService.getUserById(1);
+        socket.emit( 'getToken' , await userService.createToken( user as User) );
     })
 
 });
 
-createConnection().then(() => server.listen( PORT ));
+io.on('connect' , ( socket : socketio.Socket ) => {
+    socket.use( AuthMiddleware(process.env.JWT_SECRET as string , userService ) )
+    .on('profileImage' , ( data ) => { socket.emit('profileImage' , ""); console.log( data )})
+    .on( 'error' , err => {
+        socket.emit(AuthEmiter.INAVLID_TOKEN , AuthError.INVALID_TOKEN);
+    } );
+}) 
+
+
+createConnection().then(() => {  
+    server.listen( PORT );  
+    userService = new UserService( process.env.JWT_SECRET as string) ;
+    tokenStoreService = new TokenStoreService();
+} );
 
