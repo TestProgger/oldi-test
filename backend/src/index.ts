@@ -46,7 +46,7 @@ io.on('connect' , async ( socket : socketio.Socket ) => {
 
     const userRepository = getRepository( User );
 
-    socket.on(ValidateEvent.VALIDATE_EMAIL ,  async ( email : string  ) => {
+    socket.on(ValidateEvent.VALIDATE_EMAIL ,  async ( { email }  ) => {
 
         const errors : string[] = [];
 
@@ -65,7 +65,7 @@ io.on('connect' , async ( socket : socketio.Socket ) => {
     });
 
 
-    socket.on( ValidateEvent.VALIDATE_USERNAME , async ( username : string ) => {
+    socket.on( ValidateEvent.VALIDATE_USERNAME , async ( { username }) => {
         
         const errors : string[] = [];
 
@@ -111,7 +111,7 @@ io.on( 'connect' , async ( socket : socketio.Socket ) => {
 
     socket.on( AuthEvent.REGISTRATION ,  async ( dto : CreateUserDto ) => {
         const user = await userService.createUser(dto);
-        console.log(user);
+        // console.log(user);
         if( user instanceof  User ){
             const token = await userService.createToken( user);
             await tokenStoreService.insertToken( token  , user.id );
@@ -139,9 +139,9 @@ io.on( 'connect' , async ( socket : socketio.Socket ) => {
     });
 
     socket.on( AuthEvent.RESET , async ( { username }  ) => {
-        console.log(username)
+        // console.log(username)
         const user = await userService.getUserByUsername( username );
-        console.log(user);
+        // console.log(user);
         if( user ){ 
             
             await tokenStoreService.deleteTokenByUserId(user.id);
@@ -177,7 +177,7 @@ io.on( 'connect' , async ( socket : socketio.Socket ) => {
     });
 
     socket.on( AuthEvent.RESET_PASSWORD , async ( { password , confPassword , token } : ResetPasswordDto ) => {
-        console.log( resetUserDB );
+        // console.log( resetUserDB );
         try{
             const storedData = resetUserDB.get( token );
             if( password !== confPassword ){

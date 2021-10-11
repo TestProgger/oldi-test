@@ -30,7 +30,7 @@ export const RegisterForm : FC<RegisterProps> = ({ validator ,  authService , ch
             validator.showAlert( response.error );
         }else
         {
-
+            console.log(response)
         }
 
     } );

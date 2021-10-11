@@ -7,17 +7,23 @@ import { useAuth } from './hooks/useAuth';
 
 import {AppContext} from './contexts/AppContext'
 import { useSocket } from './hooks/useSocket';
+import { useEffect } from 'react';
 
 
 function App() {
 
-  const { token , setToken , apiEndpoint , login , logout } = useAuth();
+  const { token , setToken , getTokenFromLocalStorage ,  apiEndpoint , login , logout } = useAuth();
 
   const [ username , setUsername ] = useState<string | null>('');
   const [ profileImage , setProfileImage ] = useState<string | null>('');
 
-  // const routes =  useRoutes(!!token);
-  const routes =  useRoutes(true);
+  useEffect(() => {
+    const tk = getTokenFromLocalStorage();
+    if(tk){ setToken( tk ) }
+  } , []);
+
+  const routes =  useRoutes(!!token);
+  // const routes =  useRoutes(true); 
 
   return (
     <AppContext.Provider value = {{
