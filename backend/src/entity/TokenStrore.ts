@@ -10,8 +10,8 @@ export class TokenStore{
     @Column('varchar')
     token !: string
 
-    @OneToOne(() => User)
-    user !: User
+    @Column('int')
+    userId !: number
 
     @Column('int')
     expirationTime !: number
