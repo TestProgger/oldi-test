@@ -7,6 +7,7 @@ import { useAuth } from './hooks/useAuth';
 
 import {AppContext} from './contexts/AppContext'
 import {io , Socket } from 'socket.io-client';
+import { useSocket } from './hooks/useSocket';
 
 
 function App() {
@@ -18,9 +19,6 @@ function App() {
 
   const routes =  useRoutes(!!token);
 
-  const socketIO : Socket = io(apiEndpoint.replace(/\/api/gmi , ''));
-  socketIO.connect(); 
-
   return (
     <AppContext.Provider value = {{
       token,
@@ -28,7 +26,7 @@ function App() {
             apiEndpoint , 
             login,
             logout,
-            io : socketIO,
+            io : useSocket( token as string  , apiEndpoint.replace(/\/api/gmi , '') ),
             username , 
             setUsername,
             profileImage , 
