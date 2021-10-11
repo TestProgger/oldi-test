@@ -111,9 +111,10 @@ io.on( 'connect' , async ( socket : socketio.Socket ) => {
 
     socket.on( AuthEvent.REGISTRATION ,  async ( dto : CreateUserDto ) => {
         const user = await userService.createUser(dto);
+        console.log(user);
         if( user instanceof  User ){
             const token = await userService.createToken( user);
-            await tokenStoreService.insertToken( token  , user );
+            await tokenStoreService.insertToken( token  , user.id );
             socket.emit(AuthEmiter.REGISTERED , token);
         }else
         {
@@ -128,7 +129,7 @@ io.on( 'connect' , async ( socket : socketio.Socket ) => {
         if ( data instanceof User )
         {
             const token = await userService.createToken( data);
-            await tokenStoreService.insertToken( token , data );
+            await tokenStoreService.insertToken( token , data.id );
             socket.emit( AuthEmiter.LOGED , token );
         }
         else
@@ -137,11 +138,13 @@ io.on( 'connect' , async ( socket : socketio.Socket ) => {
         }
     });
 
-    socket.on( AuthEvent.RESET , async ( username : string ) => {
+    socket.on( AuthEvent.RESET , async ( { username }  ) => {
+        console.log(username)
         const user = await userService.getUserByUsername( username );
+        console.log(user);
         if( user ){ 
             
-            await tokenStoreService.deleteTokenByUser(user);
+            await tokenStoreService.deleteTokenByUserId(user.id);
 
             /// Code sended to E-Mail
             const code  = Math.floor(Math.random() * 10000000).toString().slice(0,6);
@@ -150,8 +153,7 @@ io.on( 'connect' , async ( socket : socketio.Socket ) => {
 
             const tmpToken = await userService.createTempToken(user);
             resetUserDB.set( tmpToken , {code , id : user.id }  );
-            socket.emit( AuthEmiter.RESETED , tmpToken );
-            setTimeout( () => resetUserDB.delete( tmpToken ) , +( process.env.TMP_TOKEN_LIFETIME as string ) ) 
+            socket.emit( AuthEmiter.RESETED , tmpToken ); 
         }
         else{ socket.emit( AuthEmiter.RESETED , { error : [AuthError.LOGIN_IDENTITY_NOT_FOUND] } ) }
     } )
@@ -161,7 +163,7 @@ io.on( 'connect' , async ( socket : socketio.Socket ) => {
             const storedData = resetUserDB.get( token );
                 if( storedData?.code === code )
                 {
-                    socket.emit( AuthEmiter.CONFIRMED , {} )
+                    socket.emit( AuthEmiter.CONFIRMED , null )
                 }else
                 {
                     socket.emit( AuthEmiter.CONFIRMED , { error : [ AuthError.CONFIRM_INCORRECT_CODE ] } ); 
@@ -203,6 +205,7 @@ io.on('connect' , ( socket : socketio.Socket ) => {
     socket.use( AuthMiddleware(process.env.JWT_SECRET as string , userService ) )
     .on('profileImage' , ( data ) => { socket.emit('profileImage' , ""); console.log( data )})
     .on( 'error' , err => {
+        console.log(err);
         socket.emit(AuthEmiter.INAVLID_TOKEN , AuthError.INVALID_TOKEN);
     } );
 }) 
