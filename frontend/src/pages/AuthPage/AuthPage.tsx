@@ -60,15 +60,22 @@ export const AuthPage : FC = () => {
 
 
     return (
-        <div className="auth-page-container">
+        <div className=" base-container auth-page-container">
 
             { alertShown ?  <Alert   alertStrings={alertStrings}/> : null }
 
             <div className="auth-page-form">
 
-                { showLoginForm ? < LoginForm authService={auth} forgotFassword={ forgotPassword } changeToRegister = {changeFromLoginToRegister} /> : null }
+                { showLoginForm ? 
+                    < LoginForm 
+                        authService={auth} 
+                        forgotFassword={ forgotPassword } 
+                        changeToRegister = {changeFromLoginToRegister} 
+                        showAlert = { showAlert }
+                        hideAlert = { hideAlert}
+                        /> : null }
                 { showRegisterForm ? <RegisterForm  changeToLogin = {changeFromRegisterToLogin}  validator = { validator } authService={ auth } /> : null }
-                { showRCForm ?  <RCForm authService = { auth  } changeToLogin = { changeFromRCToLogin  } showAlert = { (errors) => showAlert(errors) }  hideAlert = {  () => hideAlert()}/> : null }
+                { showRCForm ?  <RCForm validator = {validator}  authService = { auth  } changeToLogin = { changeFromRCToLogin  } showAlert = { (errors) => showAlert(errors) }  hideAlert = {  () => hideAlert()}/> : null }
 
             </div>
 

@@ -33,7 +33,7 @@ export const ResetForm : FC<ResetFormInterface> = ( { resetUser , changeToLogin 
             
              <p  className={ showNotify ?  "mb-25 mt-10 notification" :  "mb-25 mt-10 notification not-visible"  }> A reset link will be sent to your E-Mail </p>
             
-            <Button classNames = "mt-10" text = "send" onClick = { () => onClick() } />
+            <Button classNames = "mt-10" text = "Send" onClick = { () => onClick() } />
         </Fragment>
     );
 

@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useContext, useState } from 'react';
 import { Input } from "../../../../components/Input/Input";
 import { Button } from '../../../../components/Button/Button';
 
@@ -7,23 +7,35 @@ import './LoginForm.css';
 import userIcon from '../../../../icons/user.png';
 import keyIcon from '../../../../icons/key.png';
 import { AuthService } from '../../../../service/AuthService';
+import { AppContext } from '../../../../contexts/AppContext';
 
 interface LoginFormInterface{
     authService : AuthService
     forgotFassword : () => void
     changeToRegister : () => void
-    showAlert ?: () => void
-    hideAlert ?: () => void
+    showAlert : (errors : string[] ) => void
+    hideAlert : () => void
 }
 
-export const LoginForm : FC<LoginFormInterface> = ( { authService , forgotFassword , changeToRegister } ) => {
+export const LoginForm : FC<LoginFormInterface> = ( { authService , forgotFassword , changeToRegister , showAlert , hideAlert } ) => {
 
     const clk = () => console.log("click");
 
-    const [ username , setUsername ] = useState<string>();
-    const [ password ,  setPassword ] = useState<string>();
+    const [ username , setUsername ] = useState<string>('');
+    const [ password ,  setPassword ] = useState<string>('');
 
+    const { login } = useContext(AppContext);
 
+    const loginUser = (  ) => {
+        authService.loginUser({ username , password } , ( response ) => {
+            if( response?.error ){ showAlert( response.error ) }
+            else{
+                hideAlert();
+                if( login)
+                    login( response );
+            }
+        })
+    }
 
     return (
         <div className = "base-form login-form">
@@ -41,7 +53,7 @@ export const LoginForm : FC<LoginFormInterface> = ( { authService , forgotFasswo
             <a className = "mb-25 base-link mt-5 forgot-password" onClick = {( event : React.MouseEvent<HTMLAnchorElement> ) => { event.preventDefault() ; forgotFassword()}  } > Forgot password ? </a>
 
 
-            <Button text = "Proceed" onClick={clk} />
+            <Button text = "Proceed" onClick={loginUser} />
             <a className = "mb-25 mt-5 base-link fs-15" onClick = {( event : React.MouseEvent<HTMLAnchorElement> ) => { event.preventDefault() ; changeToRegister()}  } > Registration </a>
         </div>
     )
