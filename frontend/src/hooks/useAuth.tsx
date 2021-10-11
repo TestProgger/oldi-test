@@ -7,7 +7,8 @@ export const localStorageName  = "oldy_token";
 
 export interface AuthInterface{
     token : string  | null | undefined
-    setToken : React.Dispatch< React.SetStateAction<string|null> >
+    setToken : React.Dispatch< React.SetStateAction<string|null> >,
+    getTokenFromLocalStorage : () => string | null
     apiEndpoint : string
     login : ( resp_token : string ) => void
     logout : ( ) => void 
@@ -26,12 +27,14 @@ export const useAuth = () : AuthInterface => {
         history.push( historyLocation === "/auth" ? "/" : historyLocation )
     } , []);
 
+    const getTokenFromLocalStorage = useCallback(() => localStorage.getItem(localStorageName) , []);
+
     const logout = useCallback( () => {
         setToken( null );
         localStorage.removeItem(localStorageName);
         history.go(0);
     }  , [])
 
-    return { token  , setToken , apiEndpoint , login  , logout };
+    return { token  , setToken , getTokenFromLocalStorage ,  apiEndpoint , login  , logout };
 
 }
