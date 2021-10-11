@@ -6,7 +6,6 @@ import { useRoutes } from './hooks/useRoutes';
 import { useAuth } from './hooks/useAuth';
 
 import {AppContext} from './contexts/AppContext'
-import {io , Socket } from 'socket.io-client';
 import { useSocket } from './hooks/useSocket';
 
 

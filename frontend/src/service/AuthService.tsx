@@ -27,11 +27,15 @@ export class AuthService{
         this.baseService( AuthEmit.RESET  , AuthEvent.RESETED , dto , listener )
     }
 
-    public checkConfirmationCode( dto : ConfirmationDto , listener : ( ...args : any[] ) => void ){
+    public checkConfirmationCode( dto : ConfirmationDto , listener : ( ...args : any[] ) => void )
+    {
         this.baseService( AuthEmit.CONFIRMATION  , AuthEvent.CONFIRMED , dto , listener )
     }
 
-
+    public resetPassword( dto : ResetPasswordDto , listener : ( ...args : any[] ) => void )
+    {
+        this.baseService( AuthEmit.RESET_PASSWORD , AuthEvent.PASSWORD_RESETED , dto , listener );
+    }
 
     private baseService( 
         emitString : string , 
