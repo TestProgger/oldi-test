@@ -8,25 +8,32 @@ import './RegisterForm.css';
 import userIcon from '../../../../icons/user.png';
 import keyIcon from '../../../../icons/key.png';
 import mailIcon from '../../../../icons/mail.png';
-import { Socket } from "socket.io-client";
+
 import { Validator } from "../../../../handlers/Validator";
-import { AuthEmit, AuthEvent } from "../../../../enums/AuthEnums";
+import { AuthService } from '../../../../service/AuthService';
 
 interface RegisterProps{
     validator : Validator
-    io : Socket
+    authService : AuthService
+    changeToLogin : () => void
 }
 
-export const RegisterForm : FC<RegisterProps> = ({ validator ,  io  }) => {
+export const RegisterForm : FC<RegisterProps> = ({ validator ,  authService , changeToLogin  }) => {
     const [ username , setUsername ] = useState<string>('');
     const [ email , setEmail ] = useState<string>('');
     const [ password , setPassword ] = useState<string>('');
     const [ confPassword , setConfPassword ] = useState<string>('');
 
-    const createUser = () => {
-        io.emit( AuthEmit.REGISTRATION , { username , email , password } );
-        io.on( AuthEvent.REGISTERED , console.log )
-    }
+    const createUser = () =>   authService.createUser( { username , email , password } , (response) => {
+        if( response?.error )
+        {
+            validator.showAlert( response.error );
+        }else
+        {
+
+        }
+
+    } );
     
     return  (
         <div className="base-form register-form">
@@ -48,6 +55,7 @@ export const RegisterForm : FC<RegisterProps> = ({ validator ,  io  }) => {
                 onBlur = {() => validator.validatePassword(password , confPassword) }
                 inputType="password" placeholder="Confirm Password" icon={keyIcon}  classNames = "mb-15" />
             <Button text = "Proceed" onClick={() =>  validator.isValid ?  createUser() : {}} />
+            <a className = "mb-25 mt-5 base-link fs-15" onClick = {( event : React.MouseEvent<HTMLAnchorElement> ) => { event.preventDefault() ; changeToLogin() }  } > Login </a>
         </div>
     )
 }
