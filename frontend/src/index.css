@@ -27,6 +27,16 @@
         color: #858585;
 }
 
+.base-container{
+    background-color: #fff9f5;
+    width: 100vw;
+    height: 100vh;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .hidden{
     visibility: hidden;
 }
