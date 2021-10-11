@@ -1,53 +1,42 @@
 import { FC  , useState} from "react";
 
 import { ResetForm } from "./ResetForm";
-import { Socket } from "socket.io-client";
 import { ConfirmationForm } from "./ConfirmationForm";
 
 import './index.css';
-import { AuthEmit, AuthEvent } from "../../../../enums/AuthEnums";
-import { useEffect } from "react";
 import { useContext } from "react";
 import { AppContext } from "../../../../contexts/AppContext";
+import { AuthService } from "../../../../service/AuthService";
 
 export interface ResetFormInterface{
-    io : Socket
+    authService : AuthService
     showAlert : ( errors : string[] ) => void
     hideAlert : () => void
+    changeToLogin : () => void
 }
 
 
-export const RCForm : FC<ResetFormInterface> = ({ io , showAlert , hideAlert }) => {
+export const RCForm : FC<ResetFormInterface> = ({ authService ,  showAlert , hideAlert , changeToLogin }) => {
 
     const [ showConfirm , setShowConfirm ] = useState<boolean>(false);
     const { login , token } = useContext(AppContext);
+    const [ tmpToken , setTmpToken ] = useState<string>('');
 
     
     const checkCode = ( code : string  ) => {
-        io.emit( AuthEmit.CONFIRMATION , code );
-        io.on( AuthEvent.CONFIRMED , ( response ) => {
+        authService.checkConfirmationCode( { token : tmpToken , code } , ( response ) => {
+            console.log(response);
             if( response?.error ) { showAlert( response.error ) }
-            else{ hideAlert() }
-        });
+            else{ hideAlert() ; console.log( 'code code' ); }
+        } )
     }
 
-    const resetPassword = ( username  : string ) => {
-        io.emit( AuthEmit.RESET , username );
-        io.on( AuthEvent.RESETED , ( response) => {
+    const resetUser = ( username  : string ) => {
+        authService.resetUser( {  username }  , ( response) => {
             if( response?.error ){ showAlert( response.error) }
-            else{ hideAlert(); setTimeout( () => setShowConfirm( true ) , 2000) }
-        } );
+            else{ setTmpToken(response)  ; hideAlert(); setTimeout( () => setShowConfirm( true ) , 2000) }
+        } )
     }
-
-    useEffect( () => {
-        io.emit( 'getToken');
-        io.on('getToken' , ( token ) => {
-            if( login ){ login(token) }
-            io.emit( 'profileImage' , {token  , data : [1,2,3,4]});
-            io.on( 'profileImage' , () => {} )
-        })
-        
-    } , [] ); 
 
 
     return (
@@ -55,7 +44,7 @@ export const RCForm : FC<ResetFormInterface> = ({ io , showAlert , hideAlert }) 
             { showConfirm ? 
                 <ConfirmationForm ckeckCode = { (code) => checkCode(code) } /> 
                 : 
-                < ResetForm  resetPassword  = { ( username ) => resetPassword(username) }/>
+                < ResetForm changeToLogin = {changeToLogin} resetUser  = { resetUser }/>
             }
         </div>
     )

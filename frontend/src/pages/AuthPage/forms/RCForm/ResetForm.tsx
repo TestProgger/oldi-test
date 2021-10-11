@@ -7,13 +7,14 @@ import { Button } from '../../../../components/Button/Button';
 import { useState } from 'react';
 
 export interface ResetFormInterface{
-    resetPassword : ( username : string ) => void
+    resetUser : ( username : string ) => void
+    changeToLogin : () => void
     showAlert ?: ( errors : string[] ) => void
     hideAlert ?: () => void 
 }
 
 
-export const ResetForm : FC<ResetFormInterface> = ( { resetPassword } ) => {
+export const ResetForm : FC<ResetFormInterface> = ( { resetUser , changeToLogin } ) => {
 
 
     const [ username , setUsername ] = useState<string>('');
@@ -21,13 +22,14 @@ export const ResetForm : FC<ResetFormInterface> = ( { resetPassword } ) => {
 
     const onClick = () => {
         setShowNotify( true );
-        resetPassword( username )
+        resetUser( username )
     }
 
     return (
         <Fragment>
             <h1 className="base-form-header header mb-50">  Reset </h1>
-            <Input classNames="mb-25"  icon={userIcon} placeholder="Username" onChange ={ ( event ) => setUsername( event.target.value ) } onBlur = { () => {} } />
+            <Input classNames=""  icon={userIcon} placeholder="Username" onChange ={ ( event ) => setUsername( event.target.value ) } onBlur = { () => {} } />
+            <a className = "mb-25 login" onClick = {( event : React.MouseEvent<HTMLAnchorElement> ) => { event.preventDefault() ; changeToLogin() }} > Login ? </a>
             
              <p  className={ showNotify ?  "mb-25 mt-10 notification" :  "mb-25 mt-10 notification not-visible"  }> A reset link will be sent to your E-Mail </p>
             

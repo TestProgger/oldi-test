@@ -15,7 +15,7 @@ export const ConfirmationForm : FC<ConfirmationFormInterface> = ({ ckeckCode }) 
 
     return (
         <Fragment>
-            <h1 className="base-form-header header mb-50">  Reset </h1>
+            <h1 className="base-form-header header mb-50">  Confirmation </h1>
             <Input classNames="mb-25"  icon={keyIcon} placeholder="Confirmation Code" onChange ={ ( event ) => setCode( event.target.value ) } onBlur = { () => {} } />
             
             <Button classNames = "mt-10" text = "send" onClick = { () => ckeckCode(code) } />

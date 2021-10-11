@@ -1,14 +1,22 @@
 import React, { FC, useState } from 'react';
 import { Input } from "../../../../components/Input/Input";
 import { Button } from '../../../../components/Button/Button';
-import { Error } from '../../../../components/Error/Error';
 
 import './LoginForm.css';
 
 import userIcon from '../../../../icons/user.png';
 import keyIcon from '../../../../icons/key.png';
+import { AuthService } from '../../../../service/AuthService';
 
-export const LoginForm : FC = () => {
+interface LoginFormInterface{
+    authService : AuthService
+    forgotFassword : () => void
+    changeToRegister : () => void
+    showAlert ?: () => void
+    hideAlert ?: () => void
+}
+
+export const LoginForm : FC<LoginFormInterface> = ( { authService , forgotFassword , changeToRegister } ) => {
 
     const clk = () => console.log("click");
 
@@ -28,9 +36,13 @@ export const LoginForm : FC = () => {
             <Input 
                     onChange = { (event : React.ChangeEvent<HTMLInputElement> ) => setPassword( event.target.value ) } 
                     onBlur = { ( ) => {} }
-                    inputType="password" placeholder="Password" icon={keyIcon}  classNames = "mb-15" />
+                    inputType="password" placeholder="Password" icon={keyIcon}   />
+            
+            <a className = "mb-25 base-link mt-5 forgot-password" onClick = {( event : React.MouseEvent<HTMLAnchorElement> ) => { event.preventDefault() ; forgotFassword()}  } > Forgot password ? </a>
+
+
             <Button text = "Proceed" onClick={clk} />
-            <Error isShown = { false } head="ident Error" text="rebuild your brain" />
+            <a className = "mb-25 mt-5 base-link fs-15" onClick = {( event : React.MouseEvent<HTMLAnchorElement> ) => { event.preventDefault() ; changeToRegister()}  } > Registration </a>
         </div>
     )
 }
