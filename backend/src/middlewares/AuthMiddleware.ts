@@ -7,16 +7,16 @@ export const PROTECTED_EVENTS = [ 'profileImage' ];
 
 export const AuthMiddleware = ( jwtSecret : string , authService : UserService ) =>  async ( packet : any[] , next : Function ) => {
     const [event ,  data ] = packet;
+    
+    
 
     if( event in PROTECTED_EVENTS )
     {
         if( data?.token )
         {
             const decoded : any = jwt.verify( data.token , jwtSecret );
-            
-
             const user = await authService.getUserByUUID(decoded.uuid);
-            packet = [packet[0] , { data : data.data , user }];
+            packet[1] = { ...data.data , user };
             next();
         }
         else
@@ -26,6 +26,7 @@ export const AuthMiddleware = ( jwtSecret : string , authService : UserService )
     }
     else
     {
-        next()
+        packet[1] = { ...data.data };
+        next();
     }
 }
