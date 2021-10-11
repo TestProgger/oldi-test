@@ -7,10 +7,11 @@ export interface ButtonProps {
     text : string ,
     onClick : ( ) => void,
     classNames ?: string
+    disabled ?: boolean
 }
 
-export const Button : FC<ButtonProps> = ({ text , onClick , classNames }  : ButtonProps) => {
+export const Button : FC<ButtonProps> = ({ text , onClick , classNames , disabled }  : ButtonProps) => {
     return (
-        <button onClick = { () => onClick() }  className = {classNames  ?  "custom-button " + classNames : "custom-button"} > { text } </button>
+        <button disabled = {disabled} onClick = { () => onClick() }  className = {classNames  ?  "custom-button " + classNames : "custom-button"} > { text } </button>
     )
 }

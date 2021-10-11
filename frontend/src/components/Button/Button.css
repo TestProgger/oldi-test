@@ -22,5 +22,8 @@
 }
 
 .custom-button:disabled{
-    background-color: aliceblue;
+    background-color: #ccc;
+}
+.custom-button:disabled:hover{
+    box-shadow: none;
 }
