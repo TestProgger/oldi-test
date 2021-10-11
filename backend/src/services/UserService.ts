@@ -73,7 +73,7 @@ export class UserService{
         {
             user.password = password
         }
-        return await this.userRepository.merge(user  as User );
+        return await this.userRepository.save(user  as User );
     }
 
     async createTempToken( user : User ): Promise< string >

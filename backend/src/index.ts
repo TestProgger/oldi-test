@@ -177,6 +177,7 @@ io.on( 'connect' , async ( socket : socketio.Socket ) => {
     });
 
     socket.on( AuthEvent.RESET_PASSWORD , async ( { password , confPassword , token } : ResetPasswordDto ) => {
+        console.log( resetUserDB );
         try{
             const storedData = resetUserDB.get( token );
             if( password !== confPassword ){
@@ -190,6 +191,7 @@ io.on( 'connect' , async ( socket : socketio.Socket ) => {
             }
         }catch(ex)
         {
+            console.log(ex);
             socket.emit( AuthEmiter.PASSWORD_RESETED , {  error : [ AuthError.RESET_PASSWORD_INVALID_FORM ]} )
         }
     } );
