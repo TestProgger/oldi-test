@@ -8,9 +8,10 @@
 
     padding: 10px 0;
 
-    max-width: 282px;
-
+    /* max-width: 282px; */
+    width: 260px;
     background-color: #E5E5E5;
+    transition: all 1s ease-in ;
 
     display: flex;
     justify-content: space-around;
@@ -34,30 +35,21 @@
     border-radius: 55px;
 }
 
-.menu .burgerWithoutLogOut img{
-    width: 100%;
-    height: auto;
-}
-
-
+.menu .burgerWithoutLogOut img,
 .menu .burger img{
     width: 100%;
     height: auto;
 }
 
-.menu .profileWithoutLogOut img{
-    width: 100%;
-    height: auto;
-}
-
-
-.menu .profileImage img{
-    width: 100%;
-    height: auto;
+.menu .profileImage img,
+.menu .profileWithoutLogOut img
+{
+    width: 80px;
+    height: 80px;
+    border-radius: 100%;
 }
 
 .menu .logOut img{
-    margin-left: 10px;
     width: 80%;
     height: auto;
 }
