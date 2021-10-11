@@ -1,5 +1,5 @@
 import { IsEmail } from 'class-validator';
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { hash } from 'bcrypt';
 import { randomBytes } from 'crypto'
 import { v4 as uuidv4 } from 'uuid';
@@ -28,15 +28,24 @@ export class User{
     @Column( "varchar" , { length : 255 , nullable : true } )
     profileImage ?: string
 
+    
     @BeforeInsert()
     async hashPassword(){
         this.password = await hash( this.password , 10 );
     }
 
+    @BeforeUpdate()
+    async updatePassword(){
+        this.password = await hash( this.password , 10 );
+    }
+
+
     @BeforeInsert()
     async genSecret(){
         this.secret =  randomBytes(64).toString('base64');
     }
+
+
 
     @BeforeInsert()
     async getUUID(){
