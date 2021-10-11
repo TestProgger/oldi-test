@@ -1,5 +1,6 @@
 import { Switch , Route , Redirect } from 'react-router-dom';
 import { AuthPage } from '../pages/AuthPage/AuthPage';
+import { HomePage } from '../pages/HomePage/HomePage';
 
 
 export const useRoutes = ( isAuth : boolean ) => {
@@ -7,7 +8,7 @@ export const useRoutes = ( isAuth : boolean ) => {
     if( isAuth )
     {
         return (
-            <div>Loading ...</div>
+            <HomePage/>
         )
     }
     else
