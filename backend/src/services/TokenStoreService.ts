@@ -8,34 +8,47 @@ export class TokenStoreService{
 
     constructor(){}
 
-    async insertToken(token : string  , user : User, tokenLifeTimeHours : number  = 24):Promise<boolean>{
-        let tokenEntity = await this.tokenRepository.findOne( { where : { user } } );
-        if ( tokenEntity ){
+    async insertToken(token : string  , userId : number, tokenLifeTimeHours : number  = 24):Promise<boolean>{
+        let tokenEntity = await this.tokenRepository.findOne( { userId } );
+
+        if( tokenEntity ){
             tokenEntity.token = token;
             tokenEntity.expirationTime = Date.now() + ( tokenLifeTimeHours * 60 * 60 * 1000 );
             await this.tokenRepository.merge( tokenEntity );
-        }
-        else{
-            tokenEntity = new TokenStore()
+        }else
+        {
+            tokenEntity = new TokenStore();
             tokenEntity.token = token;
-            tokenEntity.user = user;
+            tokenEntity.userId = userId;
             tokenEntity.expirationTime = Date.now() + ( tokenLifeTimeHours * 60 * 60 * 1000 );
-            await this.tokenRepository.save(tokenEntity);
+            await this.tokenRepository.save( tokenEntity );
         }
-
-        return tokenEntity instanceof TokenStore;
+        return !!tokenEntity;
     }
 
     async deleteToken( token : string ):Promise< boolean >
     {
-        const tokenEntity = await this.tokenRepository.delete( { token }  );
-        return !!tokenEntity?.affected;
+        try{
+            const tokenEntity = await this.tokenRepository.delete( { token }  );
+            return true
+        }catch(ex)
+        {
+            return false;
+        }
+        
     }
 
-    async deleteTokenByUser( user : User ):Promise<boolean>
+    async deleteTokenByUserId( userId : number ):Promise<boolean>
     {
-        const tokenEntity = await this.tokenRepository.delete( { user }  );
-        return !!tokenEntity?.affected;
+        try{
+            const tokenEntity = await this.tokenRepository.delete( { userId  }  );
+            return true
+        }catch(ex)
+        {
+            return false
+        }
+        
+        
     }
 
     async getTokenEntity( token : string ):Promise<TokenStore|undefined>
@@ -43,9 +56,9 @@ export class TokenStoreService{
         return await this.tokenRepository.findOne({ token });
     } 
 
-    async getTokenEntityByUser( user : User ):Promise<TokenStore|undefined>
+    async getTokenEntityByUserId( userId : number ):Promise<TokenStore|undefined>
     {
-        return await this.tokenRepository.findOne( { user } );
+        return await this.tokenRepository.findOne( { userId } );
     }
 
 
