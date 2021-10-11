@@ -1,0 +1,63 @@
+.menu{
+    position: absolute;
+    border-radius: 55px;
+    box-shadow: 0 0 4px #e5e5e5;
+
+    top : 20px;
+    right : 120px;
+
+    padding: 10px 0;
+
+    max-width: 282px;
+
+    background-color: #E5E5E5;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.menu .burger ,
+.menu .profileImage,
+.menu .logOut
+{
+    width: 20%;
+    height: 100%;
+    border-radius: 55px;
+}
+
+.menu .burgerWithoutLogOut ,
+.menu .profileWithoutLogOut
+{
+    width: 30%;
+    height: 100%;
+    border-radius: 55px;
+}
+
+.menu .burgerWithoutLogOut img{
+    width: 100%;
+    height: auto;
+}
+
+
+.menu .burger img{
+    width: 100%;
+    height: auto;
+}
+
+.menu .profileWithoutLogOut img{
+    width: 100%;
+    height: auto;
+}
+
+
+.menu .profileImage img{
+    width: 100%;
+    height: auto;
+}
+
+.menu .logOut img{
+    margin-left: 10px;
+    width: 80%;
+    height: auto;
+}
