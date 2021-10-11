@@ -1,5 +1,6 @@
 import React, { createContext } from "react";
 import { Socket } from "socket.io-client";
+import { UseSocketInterface } from "../hooks/useSocket";
 
 
 
@@ -14,7 +15,7 @@ export interface AppContextInterface{
     profileImage ?: string | null
     setProfileImage ?: React.Dispatch< React.SetStateAction<string|null> >
 
-    io ?: Socket
+    io ?: UseSocketInterface
     apiEndpoint ?: string
     login ?: ( resp_token : string ) => void
     logout ?: () => void 
