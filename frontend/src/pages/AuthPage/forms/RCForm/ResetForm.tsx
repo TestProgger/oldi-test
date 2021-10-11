@@ -9,19 +9,18 @@ import { useState } from 'react';
 export interface ResetFormInterface{
     resetUser : ( username : string ) => void
     changeToLogin : () => void
+    showNotify : boolean 
     showAlert ?: ( errors : string[] ) => void
     hideAlert ?: () => void 
 }
 
 
-export const ResetForm : FC<ResetFormInterface> = ( { resetUser , changeToLogin } ) => {
+export const ResetForm : FC<ResetFormInterface> = ( { resetUser , changeToLogin , showNotify } ) => {
 
 
     const [ username , setUsername ] = useState<string>('');
-    const [ showNotify , setShowNotify ] = useState<boolean>(false);
 
     const onClick = () => {
-        setShowNotify( true );
         resetUser( username )
     }
 

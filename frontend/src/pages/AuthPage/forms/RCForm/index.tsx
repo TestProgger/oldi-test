@@ -68,7 +68,7 @@ export const RCForm : FC<ResetFormInterface> = ({ validator ,  authService ,  sh
                 null
             }
 
-            { showResetUser ?  < ResetForm changeToLogin = {changeToLogin} resetUser = { resetUser }/> : null }
+            { showResetUser ?  < ResetForm changeToLogin = {changeToLogin} resetUser = { resetUser } showNotify={!!tmpToken} /> : null }
 
             { showResetPassword ?  <ResetPasswordForm validator = { validator } resetPassword={resetPassword} /> : null }
 

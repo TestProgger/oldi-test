@@ -1,4 +1,5 @@
-import { FC } from "react";
+import { FC, Fragment } from "react";
+import { Menu } from "../../components/Menu/Menu";
 
 
 import './HomePage.css';
@@ -7,12 +8,17 @@ export const HomePage:FC = () => {
 
     return (
 
-        <div className=" base-container home-container">
+        <Fragment>
+            <Menu/>
+            <div className=" base-container home-container">
+                
+                
+
+                <h1> Home Page </h1>
             
-            <h1> Home Page </h1>
-        
-        
-        </div>
+            
+            </div>
+        </Fragment>
 
     )
 

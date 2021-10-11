@@ -147,7 +147,7 @@ io.on( 'connect' , async ( socket : socketio.Socket ) => {
             await tokenStoreService.deleteTokenByUserId(user.id);
 
             /// Code sended to E-Mail
-            const code  = Math.floor(Math.random() * 10000000).toString().slice(0,6);
+            const code  = Math.floor(Math.random() * 100000000).toString().slice(0,6);
             console.log(code); 
 
 

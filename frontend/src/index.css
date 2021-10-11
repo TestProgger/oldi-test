@@ -75,6 +75,9 @@
 .not-visible{
     visibility: hidden;
 }
+.d-none{
+    display: none;
+}
 
 
 

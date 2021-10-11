@@ -16,7 +16,8 @@ function App() {
   const [ username , setUsername ] = useState<string | null>('');
   const [ profileImage , setProfileImage ] = useState<string | null>('');
 
-  const routes =  useRoutes(!!token);
+  // const routes =  useRoutes(!!token);
+  const routes =  useRoutes(true);
 
   return (
     <AppContext.Provider value = {{
