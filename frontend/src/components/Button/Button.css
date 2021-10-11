@@ -16,3 +16,11 @@
     height : 37px;
 
 }
+
+.custom-button:hover{
+    box-shadow: 0 0 4px #EE1F82;
+}
+
+.custom-button:disabled{
+    background-color: aliceblue;
+}
