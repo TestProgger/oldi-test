@@ -1,5 +1,6 @@
 import { Socket } from "socket.io-client";
 import { ValidateEmit , ValidateEvent } from '../enums/ValidateEnum';
+import { UseSocketInterface } from "../hooks/useSocket";
 
 
 interface Response{
@@ -11,9 +12,9 @@ interface Response{
 export class Validator{
 
     constructor(
-        private ioClient : Socket,
-        private showAlert : ( alertStrings : string[]) => void,
-        private hideAlert : () => void ,
+        private ioClient : UseSocketInterface,
+        public showAlert : ( alertStrings : string[]) => void,
+        public hideAlert : () => void ,
         public isValid : boolean  = false
     ){}
 
