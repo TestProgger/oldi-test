@@ -32,7 +32,6 @@ export const RCForm : FC<ResetFormInterface> = ({ validator ,  authService ,  sh
     
     const checkCode = ( code : string  ) => {
         authService.checkConfirmationCode( { token : tmpToken , code } , ( response ) => {
-            console.log(response);
             if( response?.error ) { showAlert( response.error ) }
             else{ 
                 hideAlert() ; 

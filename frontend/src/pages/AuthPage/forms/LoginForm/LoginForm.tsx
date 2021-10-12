@@ -8,6 +8,7 @@ import userIcon from '../../../../icons/user.png';
 import keyIcon from '../../../../icons/key.png';
 import { AuthService } from '../../../../service/AuthService';
 import { AppContext } from '../../../../contexts/AppContext';
+import { RoleSelector } from '../../../../components/RoleSelector/RoleSelector';
 
 interface LoginFormInterface{
     authService : AuthService
@@ -18,8 +19,6 @@ interface LoginFormInterface{
 }
 
 export const LoginForm : FC<LoginFormInterface> = ( { authService , forgotFassword , changeToRegister , showAlert , hideAlert } ) => {
-
-    const clk = () => console.log("click");
 
     const [ username , setUsername ] = useState<string>('');
     const [ password ,  setPassword ] = useState<string>('');
@@ -39,6 +38,7 @@ export const LoginForm : FC<LoginFormInterface> = ( { authService , forgotFasswo
 
     return (
         <div className = "base-form login-form">
+            {/* <RoleSelector roles={[ { id:1 , name : "Fan" } ]} classNames = {["ml-70p" , "mt-25"]} /> */}
             <h1 className="base-form-header header" > Login </h1>
             <Input  
                 onChange = { (event : React.ChangeEvent<HTMLInputElement> ) => setUsername( event.target.value ) } 
