@@ -17,9 +17,11 @@ function App() {
   const [ username , setUsername ] = useState<string | null>('');
   const [ profileImage , setProfileImage ] = useState<string | null>('');
 
+  const socket = useSocket( token as string  , apiEndpoint.replace(/\/api/gmi , '') );
+
   useEffect(() => {
     const tk = getTokenFromLocalStorage();
-    if(tk){ setToken( tk ) }
+    if(tk){ login(tk) }
   } , []);
 
   const routes =  useRoutes(!!token);
@@ -32,7 +34,7 @@ function App() {
             apiEndpoint , 
             login,
             logout,
-            io : useSocket( token as string  , apiEndpoint.replace(/\/api/gmi , '') ),
+            io : socket,
             username , 
             setUsername,
             profileImage , 
