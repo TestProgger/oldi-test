@@ -1,3 +1,8 @@
+:root{
+    --menu-item-width : 60px;
+    --menu-item-height : 60px;
+}
+
 .menu{
     position: absolute;
     border-radius: 55px;
@@ -6,50 +11,47 @@
     top : 20px;
     right : 120px;
 
-    padding: 10px 0;
+    padding: 10px 20px;
 
     /* max-width: 282px; */
-    width: 260px;
+    width: calc( 2 * var( --menu-item-width ) );
     background-color: #E5E5E5;
-    transition: all 1s ease-in ;
+    transition: all 0.4s ease-in ;
 
     display: flex;
     justify-content: space-around;
     align-items: center;
 }
 
-.menu .burger ,
-.menu .profileImage,
-.menu .logOut
-{
-    width: 20%;
-    height: 100%;
-    border-radius: 55px;
+.menu .burger,
+.menu .logOut {
+    width: var(--menu-item-width);
+    width: var( --menu-item-height );
 }
 
-.menu .burgerWithoutLogOut ,
-.menu .profileWithoutLogOut
-{
-    width: 30%;
-    height: 100%;
-    border-radius: 55px;
-}
-
-.menu .burgerWithoutLogOut img,
-.menu .burger img{
-    width: 100%;
-    height: auto;
-}
-
-.menu .profileImage img,
-.menu .profileWithoutLogOut img
-{
-    width: 80px;
-    height: 80px;
-    border-radius: 100%;
-}
-
+.menu .burger img,
 .menu .logOut img{
-    width: 80%;
-    height: auto;
+    width: calc( var(--menu-item-width) * 0.8 );
+    height: calc( var(--menu-item-height) * 0.8 );
+}
+
+.menu .burger{
+    margin-right: 10px;
+}
+
+.menu .profileImage .image{
+    width: var(--menu-item-width);
+    height: var(--menu-item-height);
+    background-image: linear-gradient(#9E2692 , #FAA958);
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu .profileImage .image img{
+    width: 94%;
+    height: 94%;
+    border-radius: 100%;
+    background-color: #E5E5E5;
 }
