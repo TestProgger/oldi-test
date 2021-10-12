@@ -22,7 +22,7 @@ export const useAuth = () : AuthInterface => {
     const historyLocation = history.location.pathname; 
 
     const login = useCallback(( resp_token : string ) => {
-        setToken( resp_token );
+        setToken( (prev) => resp_token );
         localStorage.setItem( localStorageName , resp_token );
         history.push( historyLocation === "/auth" ? "/" : historyLocation )
     } , []);

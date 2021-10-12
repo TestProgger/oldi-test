@@ -8,10 +8,12 @@ export interface  UseSocketInterface{
 }
 
 export const useSocket = (token : string  , apiEndpoint : string ) => {
+    
     const socketIO : Socket = io(apiEndpoint);
     socketIO.connect(); 
 
     const emit = useCallback( ( emitString : string  , data : any ) => {
+        const token = localStorage.getItem('oldy_token');
         socketIO.emit( emitString , { data , token } );
     }  , [])
 
