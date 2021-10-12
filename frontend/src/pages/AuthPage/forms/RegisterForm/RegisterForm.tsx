@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { Input } from "../../../../components/Input/Input";
 import { Button } from "../../../../components/Button/Button";
 
@@ -11,6 +11,8 @@ import mailIcon from '../../../../icons/mail.png';
 
 import { Validator } from "../../../../handlers/Validator";
 import { AuthService } from '../../../../service/AuthService';
+import { AppContext } from "../../../../contexts/AppContext";
+import { Role, RoleSelector } from "../../../../components/RoleSelector/RoleSelector";
 
 interface RegisterProps{
     validator : Validator
@@ -23,20 +25,28 @@ export const RegisterForm : FC<RegisterProps> = ({ validator ,  authService , ch
     const [ email , setEmail ] = useState<string>('');
     const [ password , setPassword ] = useState<string>('');
     const [ confPassword , setConfPassword ] = useState<string>('');
+    const [ roleId , setRoleId ] = useState<number>(1);
+    const [ roles , setRoles ] = useState<Role[]>([]);
 
-    const createUser = () =>   authService.createUser( { username , email , password } , (response) => {
+    const {login} = useContext(AppContext);
+
+    const createUser = () =>   authService.createUser( { username , email , password , roleId } , (response) => {
         if( response?.error )
         {
             validator.showAlert( response.error );
-        }else
-        {
-            console.log(response)
-        }
-
+        }else{
+            if (login)
+                login(response);
+        }   
     } );
+
+    useEffect( () => {
+        authService.getRoles( setRoles );
+    } , [] )
     
     return  (
         <div className="base-form register-form">
+            <RoleSelector roles = { roles } classNames={["ml-60p" , "mt-25"]} setRole = { setRoleId } />
             <h1 className="base-form-header header" > Register </h1>
             <Input 
                 onChange = { (event : React.ChangeEvent<HTMLInputElement>) => setUsername(event.target.value) }
