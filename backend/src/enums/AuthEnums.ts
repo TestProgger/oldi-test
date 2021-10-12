@@ -3,7 +3,9 @@ export enum AuthEvent {
     LOGIN = 'login',
     RESET = 'reset',
     RESET_PASSWORD = 'resetPassword',
-    CONFIRMATION = "confirmation"
+    CONFIRMATION = "confirmation",
+
+    GET_ROLES = "getRoles"
 
 }
 
@@ -13,7 +15,9 @@ export enum AuthEmiter {
     RESETED = 'reseted',
     CONFIRMED = "confirmed",
     PASSWORD_RESETED = 'passwordReseted',
-    INAVLID_TOKEN = "invalidToken"
+    INAVLID_TOKEN = "invalidToken",
+
+    GET_ROLES = "getRoles"
 }
 
 
