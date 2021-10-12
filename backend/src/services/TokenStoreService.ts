@@ -38,6 +38,18 @@ export class TokenStoreService{
         
     }
 
+    async isExpired( token :  string  ):Promise<boolean>
+    {
+        try {
+            const tokenEntity = await this.tokenRepository.findOne({ where : { token }  })
+            const isExpired = Date.now() >= ( tokenEntity?.expirationTime as number );
+            if( isExpired ) { await this.tokenRepository.delete( { id : tokenEntity?.id } ) }
+            return isExpired ; 
+        }catch(ex){
+            return true;
+        }
+    }
+
     async deleteTokenByUserId( userId : number ):Promise<boolean>
     {
         try{
@@ -47,8 +59,6 @@ export class TokenStoreService{
         {
             return false
         }
-        
-        
     }
 
     async getTokenEntity( token : string ):Promise<TokenStore|undefined>
