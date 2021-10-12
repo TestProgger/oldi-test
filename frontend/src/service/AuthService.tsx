@@ -5,11 +5,14 @@ import { LoginUserDto } from "./dto/LoginUserDto";
 import { ResetPasswordDto } from "./dto/ResetPasswordDto";
 import { ResetDto } from "./dto/ResetDto";
 import { UseSocketInterface } from "../hooks/useSocket";
+import { BaseService } from "./BaseService";
 
-export class AuthService{
+export class AuthService extends BaseService {
     constructor(
-        private ioClient : UseSocketInterface
-    ){}
+        private  io : UseSocketInterface
+    ){
+        super( io );
+    }
 
 
     public createUser( dto : CreateUserDto, listener : ( ...args : any[] ) => void  )
@@ -37,16 +40,9 @@ export class AuthService{
         this.baseService( AuthEmit.RESET_PASSWORD , AuthEvent.PASSWORD_RESETED , dto , listener );
     }
 
-    private baseService( 
-        emitString : string , 
-        eventString : string , 
-        dto : CreateUserDto | LoginUserDto | ConfirmationDto | ResetPasswordDto | ResetDto  ,
-        listener : ( ...args : any[] ) => void
-        )
+    public getRoles( listener : (...args:any[]) => void )
     {
-
-        this.ioClient.emit( emitString , { ...dto } );
-        this.ioClient.on( eventString , listener );
+        this.baseService( 'getRoles' , 'getRoles'  ,  {} , listener );
     }
 
 }
