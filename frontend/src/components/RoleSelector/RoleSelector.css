@@ -1,0 +1,14 @@
+.role-selector{
+    width: 130px;
+}
+
+.role-selector select{
+    color: white;
+    background: #C6ADBA ;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 5px;
+    width: 100%;
+}
+
