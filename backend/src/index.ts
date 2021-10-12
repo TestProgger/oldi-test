@@ -18,6 +18,8 @@ import { ConfirmationDto } from './services/dto/ConfirmationDto';
 import { ResetPasswordDto } from './services/dto/ResetPasswordDto';
 import { AuthMiddleware } from './middlewares/AuthMiddleware';
 import {  TokenStoreService } from './services/TokenStoreService';
+import { UserInteractionService } from './services/UserInteractionService';
+import { UIEvent } from './enums/UserInteractionEnum';
 
 const PORT = 5000;
 
@@ -40,6 +42,7 @@ const io : socketio.Server = new socketio.Server(server , {
 
 let userService: UserService;
 let tokenStoreService : TokenStoreService;
+let userInteractionService : UserInteractionService
 
 // Validating Values
 io.on('connect' , async ( socket : socketio.Socket ) => {
@@ -111,7 +114,6 @@ io.on( 'connect' , async ( socket : socketio.Socket ) => {
 
     socket.on( AuthEvent.REGISTRATION ,  async ( dto : CreateUserDto ) => {
         const user = await userService.createUser(dto);
-        // console.log(user);
         if( user instanceof  User ){
             const token = await userService.createToken( user);
             await tokenStoreService.insertToken( token  , user.id );
@@ -139,16 +141,14 @@ io.on( 'connect' , async ( socket : socketio.Socket ) => {
     });
 
     socket.on( AuthEvent.RESET , async ( { username }  ) => {
-        // console.log(username)
         const user = await userService.getUserByUsername( username );
-        // console.log(user);
         if( user ){ 
             
             await tokenStoreService.deleteTokenByUserId(user.id);
 
             /// Code sended to E-Mail
             const code  = Math.floor(Math.random() * 100000000).toString().slice(0,6);
-            console.log(code); 
+            console.log(`Reset Code : ${code}`); 
 
 
             const tmpToken = await userService.createTempToken(user);
@@ -177,7 +177,6 @@ io.on( 'connect' , async ( socket : socketio.Socket ) => {
     });
 
     socket.on( AuthEvent.RESET_PASSWORD , async ( { password , confPassword , token } : ResetPasswordDto ) => {
-        // console.log( resetUserDB );
         try{
             const storedData = resetUserDB.get( token );
             if( password !== confPassword ){
@@ -196,16 +195,24 @@ io.on( 'connect' , async ( socket : socketio.Socket ) => {
         }
     } );
 
-    socket.on('getToken' , async () => {
-        const user  = await userService.getUserById(1);
-        socket.emit( 'getToken' , await userService.createToken( user as User) );
-    })
+    socket.on( AuthEvent.GET_ROLES , async () => {
+        socket.emit( AuthEmiter.GET_ROLES , await userService.getRoles() );
+    } )
+
+
 
 });
 
 io.on('connect' , ( socket : socketio.Socket ) => {
-    socket.use( AuthMiddleware(process.env.JWT_SECRET as string , userService ) )
-    .on('profileImage' , ( data ) => { socket.emit('profileImage' , ""); console.log( data )})
+    socket.use( AuthMiddleware(process.env.JWT_SECRET as string , userService , tokenStoreService ) )
+    .on(UIEvent.CHANGE_PROFILE_IMAGE , async ( { image , user } ) => { 
+        await userInteractionService.changeProfileImage( image , user.id );
+        socket.emit('profileImageChanged' , true); 
+    })
+    .on( UIEvent.GET_PROFILE_IMAGE , async( { user } ) => {
+        const image = await userInteractionService.getProfileImage(user);
+        socket.emit( UIEvent.GET_PROFILE_IMAGE  , image);
+    } )
     .on( 'error' , err => {
         console.log(err);
         socket.emit(AuthEmiter.INAVLID_TOKEN , AuthError.INVALID_TOKEN);
@@ -213,9 +220,10 @@ io.on('connect' , ( socket : socketio.Socket ) => {
 }) 
 
 
-createConnection().then(() => {  
+createConnection().then((connection ) => {  
     server.listen( PORT );  
-    userService = new UserService( process.env.JWT_SECRET as string) ;
+    userService = new UserService( process.env.JWT_SECRET as string ) ;
     tokenStoreService = new TokenStoreService();
+    userInteractionService = new UserInteractionService();
 } );
 

@@ -71,6 +71,19 @@
 .mt-5{
     margin-top:5px;
 }
+.mt-25{
+    margin-top: 25px;
+}
+
+
+.ml-70p{
+    margin-left: 70%;
+}
+
+.ml-60p{
+    margin-left: 70%;
+}
+
 
 .not-visible{
     visibility: hidden;

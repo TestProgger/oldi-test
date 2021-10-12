@@ -1,4 +1,4 @@
-import { getRepository } from "typeorm";
+import { Connection, getRepository } from "typeorm";
 import { User } from "../entity/User";
 import { CreateUserDto } from "./dto/CreateUserDto";
 import { v5 as uuidv5 , v4 as uuidv4 } from 'uuid'
@@ -6,6 +6,7 @@ import { hash , compare } from "bcrypt";
 import * as jwt from 'jsonwebtoken';
 import { LoginUserDto } from "./dto/LoginUserDto";
 import { AuthError } from "../enums/AuthEnums";
+import { Role } from "../entity/Role";
 
 export interface TokenInterface{
     uuid : string ,
@@ -19,15 +20,15 @@ export interface TokenInterface{
 
 export class UserService{
 
-    private userRepository = getRepository( User );
+    protected userRepository = getRepository( User );
+    protected roleRepository = getRepository( Role );
 
     constructor(
-        private jwtSecret : string 
-
+        private jwtSecret : string ,
     ){
     }
 
-    async createUser( {username , password , email} : CreateUserDto ): Promise<User | null >
+    async createUser( {username , password , email , roleId} : CreateUserDto ): Promise<User | null >
     {
 
         const alreadyRegistered = await this.userRepository.count( { where : [ { username } , { email } ] } );
@@ -36,12 +37,22 @@ export class UserService{
         {
             return null;
         }
+        const role = await this.roleRepository.findOne(roleId);
+
 
         const user  = new User();
         user.email = email;
         user.password = password;
         user.username = username;
-        return await this.userRepository.save( user );
+        user.profileImage = '';
+        user.roleId = role?.id || 1;
+        return await this.userRepository.save(user);
+    }
+
+
+    async getRoles( ):Promise<Role[]>
+    {
+        return await this.roleRepository.find();
     }
 
     async loginUser( { username , password } : LoginUserDto ): Promise<User | string >

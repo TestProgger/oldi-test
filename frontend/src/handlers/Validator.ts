@@ -20,12 +20,12 @@ export class Validator{
 
     public validateEmail( email : string  )
     {
-        this.validator( ValidateEmit.VALIDATE_EMAIL , ValidateEvent.EMAIL_VALIDATED , email );
+        this.validator( ValidateEmit.VALIDATE_EMAIL , ValidateEvent.EMAIL_VALIDATED , { email }  );
     }
 
     public validateUsername( username : string )
     {
-        this.validator( ValidateEmit.VALIDATE_USERNAME , ValidateEvent.USERNAME_VALIDATED , username );
+        this.validator( ValidateEmit.VALIDATE_USERNAME , ValidateEvent.USERNAME_VALIDATED , { username  });
     }
 
     public validatePassword( password : string , confPassword : string  )
