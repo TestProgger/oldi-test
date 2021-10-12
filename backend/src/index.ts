@@ -153,6 +153,9 @@ io.on( 'connect' , async ( socket : socketio.Socket ) => {
 
             const tmpToken = await userService.createTempToken(user);
             resetUserDB.set( tmpToken , {code , id : user.id }  );
+
+            setTimeout(() => resetUserDB.delete( tmpToken ) , 5 * 60  * 1000) // After 2 minutes, the token will become invalid
+
             socket.emit( AuthEmiter.RESETED , tmpToken ); 
         }
         else{ socket.emit( AuthEmiter.RESETED , { error : [AuthError.LOGIN_IDENTITY_NOT_FOUND] } ) }
