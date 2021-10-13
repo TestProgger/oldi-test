@@ -1,9 +1,8 @@
 import { IsEmail } from 'class-validator';
-import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { hash } from 'bcrypt';
 import { randomBytes } from 'crypto'
 import { v4 as uuidv4 } from 'uuid';
-import { Role } from './Role';
 
 
 @Entity('users')

@@ -1,5 +1,4 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "./User";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('token_store')
 export class TokenStore{

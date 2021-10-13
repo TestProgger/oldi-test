@@ -1,6 +1,5 @@
 import { getRepository } from "typeorm";
 import { TokenStore } from "../entity/TokenStrore";
-import { User } from "../entity/User";
 
 export class TokenStoreService{
 

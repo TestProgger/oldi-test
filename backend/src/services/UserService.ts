@@ -1,7 +1,7 @@
-import { Connection, getRepository } from "typeorm";
+import { getRepository } from "typeorm";
 import { User } from "../entity/User";
 import { CreateUserDto } from "./dto/CreateUserDto";
-import { v5 as uuidv5 , v4 as uuidv4 } from 'uuid'
+
 import { hash , compare } from "bcrypt";
 import * as jwt from 'jsonwebtoken';
 import { LoginUserDto } from "./dto/LoginUserDto";

@@ -1,4 +1,4 @@
-import express , {Request , Response , Express } from 'express';
+import express , { Express } from 'express';
 import * as http from 'http';
 import * as socketio from 'socket.io';
 import cors from 'cors';
@@ -11,7 +11,7 @@ import { User } from './entity/User';
 
 import { ValidateEmit , ValidateError , ValidateEvent } from './enums/ValidateEnum';
 import {  AuthEvent , AuthError, AuthEmiter } from './enums/AuthEnums';
-import { UserService, TokenInterface } from './services/UserService';
+import { UserService } from './services/UserService';
 import { CreateUserDto } from './services/dto/CreateUserDto';
 import { LoginUserDto } from './services/dto/LoginUserDto';
 import { ConfirmationDto } from './services/dto/ConfirmationDto';
@@ -20,7 +20,6 @@ import { AuthMiddleware } from './middlewares/AuthMiddleware';
 import {  TokenStoreService } from './services/TokenStoreService';
 import { UserInteractionService } from './services/UserInteractionService';
 import { UIEvent } from './enums/UserInteractionEnum';
-import { Role } from './entity/Role';
 
 const PORT = 5000;
 
