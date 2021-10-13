@@ -7,14 +7,14 @@ export interface Role{
     name : string 
 }
 
-interface RoleSelectorInterface{
+interface RoleSelectorProps{
     roles : Role[],
     classNames : string[] ,
     setRole : ( ...args : any[] ) => void
 }
 
 
-export const RoleSelector : FC<RoleSelectorInterface> = ({ roles  , classNames , setRole}) => {
+export const RoleSelector : FC<RoleSelectorProps> = ({ roles  , classNames , setRole}) => {
     return(
         <div className={ "role-selector "}>
             <select className = {classNames.join(' ') } onChange = { ( event : React.ChangeEvent<HTMLSelectElement> ) => setRole( +event.target.value  ) }>
