@@ -93,7 +93,7 @@ io.on('connect' , async ( socket : socketio.Socket ) => {
         
         if( password !== confPassword ){ errors.push( ValidateError.PASSWORDS_DIFFERENT ); }
         if( password.length < 8 ){ errors.push( ValidateError.SHORT_PASSWORD ) }
-        if( !( /\d/.test( password ) && /[a-z][A-Z]/.test( password )  ) && password.length >=  8  ){ errors.push( ValidateError.WEAK_PASSOWRD ) }
+        if( !( /\d/.test( password ) && /[A-Z]/gmi.test( password )  ) && password.length >=  8  ){ errors.push( ValidateError.WEAK_PASSOWRD ) }
 
         socket.emit( ValidateEmit.PASSWORD_VALIDATED , errors.length ? { error : errors } : {} );
 
