@@ -22,8 +22,6 @@ export const Menu : FC<MenuInterface> = ({ profileImage , setProfileImage }) => 
     const inputRef = useRef<HTMLInputElement>(null);
     const imageRef = useRef<HTMLImageElement>(null);
 
-    // const [profileImage , setProfileImage ] = useState<string>('');
-
     const { logout } = useContext(AppContext);
     const changeProfileImage = ( event : React.ChangeEvent<HTMLInputElement>) => {
         if ( event.target.files && event.target.files[0] )
