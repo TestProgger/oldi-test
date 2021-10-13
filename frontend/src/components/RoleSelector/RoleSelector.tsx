@@ -1,4 +1,4 @@
-import React, { FC , useState } from 'react';
+import React, { FC } from 'react';
 import './RoleSelector.css';
 
 
@@ -7,14 +7,14 @@ export interface Role{
     name : string 
 }
 
-interface RoleSelector{
+interface RoleSelectorInterface{
     roles : Role[],
     classNames : string[] ,
     setRole : ( ...args : any[] ) => void
 }
 
 
-export const RoleSelector : FC<RoleSelector> = ({ roles  , classNames , setRole}) => {
+export const RoleSelector : FC<RoleSelectorInterface> = ({ roles  , classNames , setRole}) => {
     return(
         <div className={ "role-selector "}>
             <select className = {classNames.join(' ') } onChange = { ( event : React.ChangeEvent<HTMLSelectElement> ) => setRole( +event.target.value  ) }>

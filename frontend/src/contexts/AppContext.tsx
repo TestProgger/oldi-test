@@ -1,5 +1,4 @@
 import React, { createContext } from "react";
-import { Socket } from "socket.io-client";
 import { UseSocketInterface } from "../hooks/useSocket";
 
 

@@ -4,8 +4,6 @@ import { ResetForm } from "./ResetForm";
 import { ConfirmationForm } from "./ConfirmationForm";
 
 import './index.css';
-import { useContext } from "react";
-import { AppContext } from "../../../../contexts/AppContext";
 import { AuthService } from "../../../../service/AuthService";
 import { ResetPasswordForm } from "./ResetPasswordForm";
 import { Validator } from "../../../../handlers/Validator";
@@ -25,7 +23,6 @@ export const RCForm : FC<ResetFormInterface> = ({ validator ,  authService ,  sh
     const [ showConfirm , setShowConfirm ] = useState<boolean>(false);
     const [ showResetUser, setShowResetUser ] = useState<boolean>(true);
     const [ showResetPassword , setShowResetPassword ] = useState<boolean>(false);
-    const { login , token } = useContext(AppContext);
     const [ tmpToken , setTmpToken ] = useState<string>('');
 
     const history = useHistory();

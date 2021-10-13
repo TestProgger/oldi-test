@@ -5,7 +5,7 @@ import burgerIcon from '../../icons/burger.svg';
 import gridIcon  from '../../icons/grid.svg'
 import defaultProfileImage from '../../icons/defaultProfile.png';
 import logOutIcon from '../../icons/log-out.svg';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useRef , FC } from 'react';
 import { useContext } from 'react';
 import { AppContext } from '../../contexts/AppContext';

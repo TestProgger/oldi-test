@@ -3,7 +3,6 @@ import { Input } from "../../../../components/Input/Input";
 import { Button } from "../../../../components/Button/Button";
 import keyIcon from '../../../../icons/key.png'
 import { Validator } from "../../../../handlers/Validator";
-import { useHistory } from "react-router";
 
 interface ResetPasswordFormInterface{
     validator : Validator
@@ -14,8 +13,6 @@ export const ResetPasswordForm : FC<ResetPasswordFormInterface> = ({ validator ,
 
     const [ password , setPassword ] = useState<string>('');
     const [ confPassword , setConfPassword ] = useState<string>('');
-    const history = useHistory();
-    validator.isValid = false;
 
     return (
         <Fragment>

@@ -9,7 +9,7 @@ import './HomePage.css';
 
 export const HomePage:FC = () => {
 
-    const { profileImage , setProfileImage , io , login } = useContext(AppContext);
+    const { profileImage , setProfileImage , io } = useContext(AppContext);
     const userInteractionService = new UserInteractionService(io as UseSocketInterface);
 
     const changeProfileImage = ( image : string ) => {
@@ -17,10 +17,6 @@ export const HomePage:FC = () => {
         userInteractionService.changeProfileImage( { image  } , console.log );
     }
 
-    // useEffect(() => {
-    //     const tk = getTokenFromLocalStorage();
-    //     if(tk){ setToken( tk ) }
-    //   } , []);
     useEffect( () => {
         userInteractionService.getProfileImage( ( image ) => { if( setProfileImage ) { setProfileImage(image as string) } } )
     } , [] );

@@ -8,7 +8,6 @@ import userIcon from '../../../../icons/user.png';
 import keyIcon from '../../../../icons/key.png';
 import { AuthService } from '../../../../service/AuthService';
 import { AppContext } from '../../../../contexts/AppContext';
-import { RoleSelector } from '../../../../components/RoleSelector/RoleSelector';
 
 interface LoginFormInterface{
     authService : AuthService

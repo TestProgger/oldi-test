@@ -1,4 +1,3 @@
-import { Socket } from "socket.io-client";
 import { ValidateEmit , ValidateEvent } from '../enums/ValidateEnum';
 import { UseSocketInterface } from "../hooks/useSocket";
 
