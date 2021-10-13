@@ -20,6 +20,7 @@ import { AuthMiddleware } from './middlewares/AuthMiddleware';
 import {  TokenStoreService } from './services/TokenStoreService';
 import { UserInteractionService } from './services/UserInteractionService';
 import { UIEvent } from './enums/UserInteractionEnum';
+import { Role } from './entity/Role';
 
 const PORT = 5000;
 
@@ -92,7 +93,7 @@ io.on('connect' , async ( socket : socketio.Socket ) => {
         
         if( password !== confPassword ){ errors.push( ValidateError.PASSWORDS_DIFFERENT ); }
         if( password.length < 8 ){ errors.push( ValidateError.SHORT_PASSWORD ) }
-        if( !( /\d/.test( password ) && /\w/.test( password )  ) && password.length >=  8  ){ errors.push( ValidateError.WEAK_PASSOWRD ) }
+        if( !( /\d/.test( password ) && /[a-z][A-Z]/.test( password )  ) && password.length >=  8  ){ errors.push( ValidateError.WEAK_PASSOWRD ) }
 
         socket.emit( ValidateEmit.PASSWORD_VALIDATED , errors.length ? { error : errors } : {} );
 
@@ -122,8 +123,6 @@ io.on( 'connect' , async ( socket : socketio.Socket ) => {
         {
             socket.emit( AuthEmiter.REGISTERED , { error : [ AuthError.REGISTRATION_ALREADY_IN_USE ] } )
         }
-        
-        
     }  );
 
     socket.on( AuthEvent.LOGIN  , async ( dto : LoginUserDto ) => {
